@@ -11,12 +11,21 @@ use amethyst::{
     },
 };
 use component::{Enemy, Player};
+use std::collections::HashMap;
 
 pub struct Loader;
+
+#[derive(Default)]
+pub struct LoadedTextures {
+    pub textures: HashMap<String, SpriteSheetHandle>,
+}
 
 impl<'a, 'b> SimpleState<'a, 'b> for Loader {
     fn on_start(&mut self, data: StateData<GameData>) {
         let world = data.world;
+
+        world.add_resource(LoadedTextures::default());
+
         let circle_sprite_sheet_handle =
             load_sprite_sheet(world, "Circle_Spritesheet.png", "Circle_Spritesheet.ron");
         let background_sprite_sheet_handle =
@@ -36,13 +45,19 @@ fn load_sprite_sheet(world: &mut World, png_path: &str, ron_path: &str) -> Sprit
 
     let loader = world.read_resource::<amethyst::assets::Loader>();
     let sprite_sheet_store = world.read_resource::<AssetStorage<SpriteSheet>>();
-    loader.load(
+    let handle = loader.load(
         ron_path,
         SpriteSheetFormat,
         texture_id,
         (),
         &sprite_sheet_store,
-    )
+    );
+
+    let mut my = world.write_resource::<LoadedTextures>();
+    let old_val = my.textures.insert(png_path.into(), handle.clone());
+    assert!(old_val.is_none());
+
+    handle
 }
 
 /// Loads texture into world and returns texture id.
