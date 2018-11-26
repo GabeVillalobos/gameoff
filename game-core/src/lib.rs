@@ -4,6 +4,7 @@
 )]
 extern crate amethyst;
 extern crate rand;
+extern crate amethyst_rhusics;
 
 mod component;
 mod load;
