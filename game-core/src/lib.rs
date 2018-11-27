@@ -22,6 +22,7 @@ use amethyst::{
     utils::application_root_dir,
 };
 use state::Menu;
+use system::Collisions;
 
 pub fn run() -> amethyst::Result<()> {
     let root = format!("{}/resources", application_root_dir());
@@ -49,7 +50,8 @@ pub fn run() -> amethyst::Result<()> {
             RenderBundle::new(pipe, Some(config))
                 .with_sprite_sheet_processor()
                 .with_sprite_visibility_sorting(&[]), // Let's us use the `Transparent` component
-        )?;
+        )?
+        .with(Collisions::default(), "collisions", &[]);
 
     let mut game = Application::build(root, Menu)?.build(game_data)?;
     game.run();

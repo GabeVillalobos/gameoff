@@ -4,4 +4,5 @@ pub mod camera;
 pub mod enemy;
 pub mod player;
 pub mod projectile;
-pub mod collisions;
+mod collisions;
+pub use self::collisions::Collisions;
